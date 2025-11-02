@@ -1,7 +1,8 @@
 import fs from 'node:fs/promises';
 import {formateDate,getSafeValue,formateDateOnly} from './utils.js';
 import {PDFArray, PDFDocument, PDFName, StandardFonts, PDFString, rgb} from "pdf-lib";
-
+import {compress} from "compress-pdf";
+import path from "path";
 
 
 export async function processData(dataPath, templatePath) {
@@ -72,6 +73,22 @@ export async function processData(dataPath, templatePath) {
 
     console.log("Written data");
 
+    console.log("Start Compression");
+    await compressPD();
+
+    console.log("Compression Done");
+
+
+
+
+
+    async function compressPD() {
+        const pdf = path.resolve("./output_pdf.pdf");
+        const buffer = await compress(pdf);
+
+        const comPdf = path.resolve("./output_pdf.pdf");
+        await fs.writeFile(comPdf, buffer);
+    }
 
 
     function drawLabeledRectangle(page, font, opts = {}) {
